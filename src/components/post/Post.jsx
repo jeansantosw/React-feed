@@ -81,6 +81,7 @@ export function Post(props) {
           name="comment"
           value={newCommentText}
           placeholder="Deixe seu comentário"
+          required
         />
         <footer>
           <button type="submit">Publicar</button>
