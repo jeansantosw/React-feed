@@ -36,6 +36,13 @@ export function Post(props) {
     setNewCommentText(event.target.value)
   }
 
+  function deletComment(commentToDelete) {
+    const commentWithoutDeletdOne = comments.filter(comment => {
+      return comment != commentToDelete;
+    })
+    setComments(commentWithoutDeletdOne)
+  }
+
   return (
     <article className={style.post}>
       <header>
@@ -80,8 +87,16 @@ export function Post(props) {
         </footer>
       </form>
       <div className={style.commentList}>
+       
         {comments.map(comment => {
-          return <Comment key={comment} content={comment} />
+          return (
+           
+            <Comment
+              key={comment}
+              content={comment}
+              onDeletComment={deletComment}
+            />
+          )
         })}
       </div>
     </article>
