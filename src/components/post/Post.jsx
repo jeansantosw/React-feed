@@ -1,5 +1,6 @@
 import { format, formatDistanceToNow } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+import { useState } from 'react'
 
 import { Avatar } from '../avatar/Avatar'
 import { Comment } from '../comentPost/Comment'
@@ -14,10 +15,26 @@ export function Post(props) {
     }
   )
 
+  // Using states from my post component
+  const [comments, setComments] = useState(['Mais comentário!!'])
+  const [newCommentText, setNewCommentText] = useState('')
+
+  // Date formatting variables
   const publishedDataRelativeToNow = formatDistanceToNow(props.publishedAt, {
     locale: ptBR,
     addSuffix: true,
   })
+
+  // Post component functions
+  function handleCreateNewComment() {
+    event.preventDefault()
+    setComments([...comments, newCommentText])
+    setNewCommentText('')
+  }
+
+  function handleNewCommentChange() {
+    setNewCommentText(event.target.value)
+  }
 
   return (
     <article className={style.post}>
@@ -39,27 +56,33 @@ export function Post(props) {
       <div className={style.content}>
         {props.content.map(line => {
           if (line.type === 'paragraph') {
-            return <p>{line.content}</p>
+            return <p key={line.content}>{line.content}</p>
           } else if (line.type === 'link') {
             return (
-              <p>
+              <p key={line.content}>
                 <a href="#">{line.content}</a>
               </p>
             )
           }
         })}
       </div>
-      <form className={style.commentForm}>
+
+      <form onSubmit={handleCreateNewComment} className={style.commentForm}>
         <strong>Deixe seu Feedback</strong>
-        <textarea placeholder="Deixe seu comentário" />
+        <textarea
+          onChange={handleNewCommentChange}
+          name="comment"
+          value={newCommentText}
+          placeholder="Deixe seu comentário"
+        />
         <footer>
           <button type="submit">Publicar</button>
         </footer>
       </form>
       <div className={style.commentList}>
-        <Comment />
-        <Comment />
-        <Comment />
+        {comments.map(comment => {
+          return <Comment key={comment} content={comment} />
+        })}
       </div>
     </article>
   )
